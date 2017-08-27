@@ -49,6 +49,17 @@ s2 = zeros(nba,1);
 s2(1) =  output_y-.45;
 s2(2) = .45;
 
+% grid for phi
+phibar = omega2/omega1;
+phi_sd =omega2/omega1;
+phi_min = phibar- .15*phi_sd;
+phi_max = phibar+  .15*phi_sd;
+
+% grid for k
+k_ss = 2.12;
+k_min =2;
+k_max =4; 
+
 
 
 % parameters for simulations
@@ -62,27 +73,57 @@ metit = 1;                                          % the total number of draws 
                                                         % set both to 1
 periods_simulations =  200; % number of periods for the simulation
 
-
-
-
-rounds_approx = 1;
-Order_vector =  [ 4  ;   4   ; 4   ];
-
-%     rounds_approx = 3;
-%     Order_vector =  [ 4  6 8 ;   4  6  8 ; 4  6 8 ];
+% Rounds of approximation and corresponding order
+rounds_approx = 4;
+Order_vector = [ [2;2;2] [ 4  ;   4   ; 4   ] [6;6;6] [8;8;8]]; 
 
 mainRSP;
 testing_max
 
+% save solution
+save paramaters.mat parlambda1 para1  parexp1  parexp2 parlambda2 para2 ...
+        parexp_planner1 park1 park2  fspace;
+    
+
+% simulations:
+
+% initial conditions for Pareto weights
+omega2 = 1; 
+omega1 =1;
+
+% initial conditions for capital
+k1_zero =  2.1;
+k2_zero =  2.1;
+
 avg = 0; % this is counter for figures' number
 
+% parameter for using random shocks or predetermined ones: if 0, random shocks, o/w shocks are given by g1_predet and g2_predet (defined below)
+diverge = 0; % 1; %
+
+g1_predet = s1(1).*ones(random_generations, periods_simulations);
+g2_predet = s2(1).*ones(random_generations, periods_simulations);
+cut = 100; % parameter for graphs, used in figures_RSP.m
+
+% simulate one sample path
 figures_RSP;
+
+
+% Montecarlo
+k1_zero = 2.1;
+k2_zero = 2.1;
+
 
 % parameters for simulations
 % simulate 50000 independent draws and average out
-random_generations = 1000;
-metit = 50;
-periods_simulations =  200; % number of periods for the simulation
+random_generations = 50000;
+metit = 1;
+periods_simulations =  100; % number of periods for the simulation
 
+diverge =0;
 avg = 2;% this is counter for figures' number
+cut = 300; % parameter for graphs
+
+% simulate a 50000 draws Montecarlo, take averages
 figures_RSP;
+
+
