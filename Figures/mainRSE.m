@@ -19,14 +19,6 @@ for oo = 1: rounds_approx
 
 
 
-    phibar = omega2/omega1;
-    %         phi_sd =omega2/omega1;
-
-    % without homogen
-    phi_min = phibar  -.25;
-    phi_max = phibar+ .25;
-
-
 
     aggr_output = 2*output_y - [s1(2)+s2(2); s1(1)+s2(2); s1(2)+s2(1); s1(1)+s2(1)];
 
@@ -43,7 +35,7 @@ for oo = 1: rounds_approx
 
     disp(sprintf('  RoundAppr = %d ',RoundAppr));
 
-    % approxtype = 'cheb';
+%     approxtype = 'cheb';
     approxtype = 'spli';
     splineorder = [];% 1;%
     if(strcmp(approxtype,'spli'))

@@ -41,8 +41,18 @@ s2(1) =.4;
 s2(2) =output_y -.4;
 
 
+
+    phibar = omega2/omega1;
+    %         phi_sd =omega2/omega1;
+
+    % without homogen
+    phi_min = phibar  -  .5;%.1;%.45;%.15;
+    phi_max = phibar+ .5;%1;% .45; %.15;
+
+
+
 % parameters for simulations
-random_generations = 1;               % random_generations multiplied by metit gives
+random_generations = 1000;               % random_generations multiplied by metit gives
 metit = 1;                                           % the total number of draws used; just for 
                                                            % technical reasons, we store
                                                            % the draws on big matrices
@@ -52,8 +62,8 @@ metit = 1;                                           % the total number of draws
 periods_simulations =  200; % number of periods for the simulation
 
 
-rounds_approx = 1;
-Order_vector = 10;
+rounds_approx = 2;%1;
+Order_vector = [10 50];
 mainRSE;
 testing_max
 
