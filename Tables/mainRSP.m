@@ -16,18 +16,6 @@ for oo = 1:rounds_approx
 
     RoundAppr = oo;
 
-    phibar = omega2/omega1;
-
-    phi_sd =omega2/omega1;
-
-    phi_min = phibar- .5*phi_sd;
-    phi_max = phibar+  .5*phi_sd;
-
-    k_ss = 2.12;
-    k_min =3;
-    k_max =1.52*k_ss;
-
-
     % Range on which we approximate the solution:
     LowerBound = [phi_min; k_min; k_min ];
     UpperBound = [phi_max;  k_max; k_max];
@@ -43,8 +31,8 @@ for oo = 1:rounds_approx
 
 
     approxtype = 'cheb';
-    %                 approxtype = 'spli';
-    %                 splineorder =[];%1;%  1;
+%                     approxtype = 'spli';
+                    splineorder =[];%1;%  1;
     if(strcmp(approxtype,'spli'))
         fspace = fundefn(approxtype,Order,LowerBound,UpperBound,splineorder);
     else
@@ -83,9 +71,6 @@ for oo = 1:rounds_approx
         fspace=fspace1;
         Gridphi = Gridphi1;
 
-
-
-
     else
 
         a1 =funeval(para1,fspace_old, Gridphi);
@@ -101,8 +86,8 @@ for oo = 1:rounds_approx
     end;
 
 
-    % generate basis functions Chebbasis at Gridphi where ValueVec was defined:
-    Basis = funbas(fspace,Gridphi);%myfunbas(fspace,Gridphi);
+    % generate basis functions Chebbasis at Gridphi
+    Basis = funbas(fspace,Gridphi);
 
 
     phi1 = Gridphi(:,1);
@@ -119,6 +104,7 @@ for oo = 1:rounds_approx
 
     parpolicy = [parlambda1; para1 ; parexp1 ; parexp2; parlambda2; para2; ...
         parexp_planner1;park1 ;park2  ];
+    
 
 
     %%%%%%%%%%%%%%%
@@ -179,7 +165,7 @@ end;
 
 toc;
 
-time_computation(uu) = toc;
+time_computation = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %                                                                                %
@@ -203,6 +189,6 @@ max_test   = max(abs(test_residuals));
 
 
 
-testing_max(uu) = max_test(end);
-testing_norm(uu) = norm_test(end);
+testing_max = max_test(end);
+testing_norm = norm_test(end);
 

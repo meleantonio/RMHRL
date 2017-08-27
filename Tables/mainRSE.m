@@ -19,14 +19,6 @@ for oo = 1: rounds_approx
 
 
 
-    phibar = omega2/omega1;
-    %         phi_sd =omega2/omega1;
-
-    % without homogen
-    phi_min = phibar  -.25;
-    phi_max = phibar+ .25;
-
-
 
     aggr_output = 2*output_y - [s1(2)+s2(2); s1(1)+s2(2); s1(2)+s2(1); s1(1)+s2(1)];
 
@@ -43,7 +35,7 @@ for oo = 1: rounds_approx
 
     disp(sprintf('  RoundAppr = %d ',RoundAppr));
 
-    % approxtype = 'cheb';
+%     approxtype = 'cheb';
     approxtype = 'spli';
     splineorder = [];% 1;%
     if(strcmp(approxtype,'spli'))
@@ -74,6 +66,7 @@ for oo = 1: rounds_approx
         exp_disc_utility2 = funeval(parexp2,fspace,[Gridphi_inv ]);
         lambda2 = funeval(parlambda1 , fspace, [Gridphi_inv]);
         a2 =funeval(para1,fspace,[Gridphi_inv]);%
+        
         exp_planner_disc_utility  =exp_disc_utility1 + [Gridphi(:,1) ].*exp_disc_utility2 -...
             lambda1.*(a1.^2)./(1-betta) - [Gridphi(:,1)].*(lambda2.*(a2.^2))./(1-betta) ;
 
@@ -151,7 +144,7 @@ end;
 
 
 toc;
-time_computation(uu) = toc;
+time_computation = toc;
 
 %%%%%%%%%%%%%%%%%%%%%%%
 %                                                                                %
@@ -173,7 +166,5 @@ max_test   = max(abs(test_residuals));
 
 
 
-testing_max(uu) = max_test(end);
-testing_norm(uu) = norm_test(end);
-
-
+testing_max = max_test(end);
+testing_norm = norm_test(end);
