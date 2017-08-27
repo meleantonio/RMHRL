@@ -72,7 +72,7 @@ for oo = 1: rounds_approx;
     % Initial conditions for coefficients of the approximated policy
     % functions
     if (RoundAppr == 1)    
-        
+
         load initial_conditions_HA.mat para1  parlambda1 parexp_planner1 parexp1
         OrderIC = 10;
         approxtypeIC = 'spli';

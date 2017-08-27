@@ -43,7 +43,7 @@ s(1) = 0;
 s(2) =output_y;
 
 % parameters for simulations
-random_generations = 1000; % 50000;%            % random_generations multiplied by metit gives
+random_generations = 50000;%            % random_generations multiplied by metit gives
 metit = 1;                                           % the total number of draws used; just for
 % technical reasons, we store
 % the draws on big matrices
@@ -55,17 +55,17 @@ periods_simulations =  70; % number of periods for the simulation
 
 
 rounds_approx = 3;
-Order_vector = [[4;4] [6;6]  [10; 10]  [6;4]  [8;4] [10; 4] [20;20]];%[4;4] [5;5]  [8;8] 
-nClust = 16; % # clusters for choosing the grid
+Order_vector = [[4;4] [6;6]  [10; 10] ]; 
+
 
 % Create grid extrema for Pareto weights
 phibar = gam1;
 phi_sd =.3*gam1;
-phi_min = phibar-phi_sd; % .3;%
-phi_max = phibar+phi_sd;% .8; 2.5*.25  1.3;%
+phi_min = phibar-phi_sd;
+phi_max = phibar+phi_sd;
 
 % Create grid extrema for costate EE
-zetabar= .422025;%1;%
+zetabar= .422025;
 zeta_min = 0;
 zeta_max = zetabar;
 
@@ -73,6 +73,6 @@ zeta_max = zetabar;
 mainHA;
 testing_max
 verification_procedure;
-phizero = phibar;%1;%.7;
+phizero = phibar;
 figures_HA;
-testing_grid;
+
