@@ -48,7 +48,7 @@ phi2_simuNext_s2_real = zeros(random_generations, periods_simulations);
 phi2_simuNext_real =   zeros(random_generations, periods_simulations);
 
 phi1_simu_real = zeros(random_generations, periods_simulations+1);
-phi1_simu_real(:,1) = gam1;
+phi1_simu_real(:,1) = phi_zero; % gam1;
 
 a1_simu_real = zeros(random_generations, periods_simulations);
 a2_simu_real = zeros(random_generations, periods_simulations);
@@ -64,10 +64,13 @@ prob1_s2_simu_real= zeros(random_generations, periods_simulations);
 prob2_s1_simu_real= zeros(random_generations, periods_simulations);
 prob2_s2_simu_real= zeros(random_generations, periods_simulations);
 
+prob_s1_simu_real= zeros(random_generations, periods_simulations);
+prob_s2_simu_real= zeros(random_generations, periods_simulations);
+
 transfer_simu_real= zeros(random_generations, periods_simulations);
 g1_simu_real = zeros(random_generations, periods_simulations);
 bonds_simu_real = zeros(random_generations, periods_simulations+1);
-bonds_simu_real(:,1) = -betta*funeval(parexp_planner1,fspace,gam1) + gam1*funeval(parexp1,fspace,gam1);%
+bonds_simu_real(:,1) = -betta*funeval(parexp_planner1,fspace,gam1) + phi_zero*funeval(parexp1,fspace,gam1);%
 
 
 exp_disc_util_simu_real =  zeros(random_generations, periods_simulations);
@@ -173,32 +176,13 @@ for ipet=1:metit
                 funeval(parexp_planner2,fspace,  [phi2_simuNext_real(:,i)  ] ) - ...
                 phi2_simuNext_real(:,i).* funeval(parexp2,fspace,  [phi2_simuNext_real(:,i)  ] ) ) );
 
-%             bonds_simu_real(:,i+1) =-betta*(prob1_s1_simu_real(:,i).*(...
-%                 funeval(parexp_planner1,fspace,  [phi1_simuNext_real(:,i)  ] ) - ...
-%                 phi1_simuNext_real(:,i).* funeval(parexp1,fspace,  [phi1_simuNext_real(:,i)  ] ) + ...
-%                 funeval(parlambda1,fspace,  [phi1_simuNext_real(:,i)  ] )./betta.*...
-%                 (nu./funeval(para1,fspace,  [phi1_simuNext_real(:,i)  ] )).*...
-%                 (funeval(parexp1,fspace,  [phi1_simuNext_real(:,i)  ] ) - ...
-%                 (phi1_simuNext_real(:,i).^((1-sig)./sig))./(1-sig) + ...
-%                 alpha.*(funeval(para1,fspace,  [phi1_simuNext_real(:,i)  ] ).^epsil))) + ...
-%                 prob1_s2_simu_real(:,i).*(...
-%                 funeval(parexp_planner2,fspace,  [phi2_simuNext_real(:,i)  ] ) - ...
-%                 phi2_simuNext_real(:,i).* funeval(parexp2,fspace,  [phi2_simuNext_real(:,i)  ] ) + ...
-%                 funeval(parlambda2,fspace,  [phi2_simuNext_real(:,i)  ] )./betta.*...
-%                 ((-nu2.*(funeval(para2,fspace,  [phi2_simuNext_real(:,i)  ] ).^(nu2-1)))./...
-%                 (   1 - funeval(para2,fspace,  [phi2_simuNext_real(:,i)  ] ).^nu2)).*...
-%                 (funeval(parexp2,fspace,  [phi2_simuNext_real(:,i)  ] ) - ...
-%                 (phi2_simuNext_real(:,i).^((1-sig)./sig))./(1-sig) + ...
-%                 alpha.*(funeval(para2,fspace,  [phi2_simuNext_real(:,i)  ] ).^epsil))) );
-
         end;
 
     end
 
+disp(sprintf('iter = %d',ipet))
 
-
-c_simu_real = (( phi1_simu_real(:,1:end-1)).^(1/sig)); % ((omega1 + phi1)./eta).^sig; %
-
+c_simu_real = (( phi1_simu_real(:,1:end-1)).^(1/sig)); 
 transfer_simu_real  =   - 1 + c_simu_real  + g1_simu_real;
 
 exp_disc_util_simu =     ((ipet-1).*exp_disc_util_simu_old + mean(exp_disc_util_simu_real ,1))./ipet;

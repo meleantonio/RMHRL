@@ -14,12 +14,7 @@ tic;
 for oo = 1: rounds_approx
     RoundAppr = oo;     % this tells you at which round of approximation we are
 
-    % create a grid for costates around the first pareto weight for agent
-    %     gam1 =    mean(gam1_2);%gam1_2(1,1);%
-    phibar = gam1;
-    phi_sd =.3*gam1;
-    phi_min = phibar- phi_sd;
-    phi_max = phibar+phi_sd;
+  
 
     % Range on which we approximate the solution:
     LowerBound = [phi_min  ];
@@ -48,7 +43,7 @@ for oo = 1: rounds_approx
     % orders and piecewise linear functions
 
     % approxtype = 'lin';  % piecewise linear
-    % approxtype = 'cheb'; % chebychev polynomials
+%     approxtype = 'cheb'; % chebychev polynomials
     approxtype = 'spli'; % splines
     splineorder = []; % splines' order, default are cubic splines
     if(strcmp(approxtype,'spli'))
@@ -65,10 +60,11 @@ for oo = 1: rounds_approx
     % found by setting nu = 0 and solving the model iteratively while
     % increasing the value of nu till around .5
     if (RoundAppr == 1)
-
-        load initial_conditions_RMH a1 lambda1 exp_planner_disc_utility1  exp_planner_disc_utility2 ...
-            exp_disc_utility1  exp_disc_utility2 a2 lambda2
-
+        
+        load initial_conditions_RMH.mat para1 parlambda1 parexp_planner1 ...
+            parexp_planner2 ...
+            parexp1  parexp2 para2 parlambda2
+        
     else    % if we are at second approx round, we use the solution of the first round
         % as initial conditions on the new larger grid
         a1 =funeval(para1,fspace_old, Gridphi);
@@ -94,7 +90,7 @@ for oo = 1: rounds_approx
     % set initial value for parameters of the approximation
     %
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+if RoundAppr~=1
     parlambda1 =  Basis\lambda1;
     parlambda2 =  Basis\lambda2;
 
@@ -106,7 +102,7 @@ for oo = 1: rounds_approx
 
     parexp1 =  Basis\exp_disc_utility1 ;
     parexp2 =  Basis\exp_disc_utility2 ;
-
+end
     % save all parameters in the vector parpolicy
     parpolicy = [parlambda1; para1 ; parexp_planner1 ; parexp_planner2 ;...
         parexp1 ; parexp2; parlambda2; para2];%
