@@ -16,16 +16,7 @@ for oo = 1: rounds_approx;
 
     RoundAppr = oo;
 
-    % Create grid extrema for Pareto weights
-    phibar = gam1;
-    phi_sd =.3*gam1;
-    phi_min = phibar-phi_sd;
-    phi_max = phibar+phi_sd;
-
-    % Create grid extrema for costate EE
-    zetabar= .422025;
-    zeta_min =0;
-    zeta_max = zetabar;
+    
 
     % Display grid extrema
     disp(sprintf('    '));
@@ -50,7 +41,7 @@ for oo = 1: rounds_approx;
     % Generate the approximation space with Miranda-Fackler Compecon
     % toolbox
     
-    %          approxtype = 'cheb';
+%              approxtype = 'cheb';
     approxtype = 'spli';
     splineorder = [];
     if(strcmp(approxtype,'spli'))
@@ -58,29 +49,46 @@ for oo = 1: rounds_approx;
     else
         fspace = fundefn(approxtype,Order,LowerBound,UpperBound,[]);
     end;
-     
+    %  fspace1= fspace;
+    
     % Generate the grid
-    nodes=funnode(fspace);
-    Gridphi = gridmake(nodes);
-   
+    % if RoundAppr <=10
+        nodes=funnode(fspace);
+        Gridphi = gridmake(nodes);
+    % else
+    %     disp(sprintf('clusterizing the grid...'));
+    %     Gridphi_old = Gridphi;
+    %     fspace = fspace_old;
+    %     simul_HA; 
+    %     [index_clusters,Gridphi] = kmeans([reshape(phi1_simu_real(:,1:end-1), ...
+    %         random_generations*periods_simulations ,1) ...
+    %         reshape( zeta_simu_real(:,1:end-1), ...
+    %         random_generations*periods_simulations ,1)],nClust,...
+    %         'emptyaction','drop','start','cluster');
+    % end
+        
+%    fspace = fspace1;
 
     % Initial conditions for coefficients of the approximated policy
     % functions
-    if (RoundAppr == 1)
-
-        fspace1 = fspace; % just for technical reasons
-
-        load initial_conditions_HA para1 parc1 parlambda1 parexp_planner1 parexp1 fspace
-        c1 =funeval(parc1,fspace, Gridphi);
-        a1 =funeval(para1,fspace, Gridphi);
-        lambda1 =funeval(parlambda1 , fspace, Gridphi)  ;
-        exp_disc_utility1 = funeval(parexp1,fspace,Gridphi);
-        eta1 = Gridphi(:,2)./betta + (  1 - Gridphi(:,1).*(c1.^(-sig)))./((-sig).*(c1.^(-sig-1))) ;
-        exp_planner_disc_utility1  =  funeval(parexp_planner1,fspace,Gridphi);
+    if (RoundAppr == 1)    
+        
+        load initial_conditions_HA.mat para1  parlambda1 parexp_planner1 parexp1
+        OrderIC = 10;
+        approxtypeIC = 'spli';
+        splineorderIC = [];
+        if(strcmp(approxtypeIC,'spli'))
+            fspaceIC = fundefn(approxtypeIC,OrderIC,LowerBound(1),UpperBound(1),splineorderIC);
+        else
+            fspaceIC = fundefn(approxtypeIC,OrderIC,LowerBound(1),UpperBound(1),[]);
+        end;
+            
+        c1 =sqrt(Gridphi(:,1)+Gridphi(:,2)./betta);
+        a1 =funeval(para1,fspaceIC, Gridphi(:,1));
+        lambda1 =funeval(parlambda1 , fspaceIC, Gridphi(:,1))  ;
+        exp_disc_utility1 = funeval(parexp1,fspaceIC,Gridphi(:,1));
+        exp_planner_disc_utility1  =  funeval(parexp_planner1,fspaceIC,Gridphi(:,1));
         exp_planner_disc_utility2  =s(1) -s(2) + exp_planner_disc_utility1 ;
-
-        fspace = fspace1;% just for technical reasons 
-
     else
         c1 =funeval(parc1,fspace_old, Gridphi);
         a1 =funeval(para1,fspace_old, Gridphi);
@@ -109,11 +117,6 @@ for oo = 1: rounds_approx;
     
     % coefficients' vector
     parpolicy = [parlambda1; para1 ; parexp_planner1 ;parexp1 ; parc1];
-
-
-
-
-
 
     %%%%%%%%%%%%%%%
     %                                                  %

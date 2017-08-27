@@ -1,4 +1,5 @@
 function equ = value_max_verification(par00B,par00,bond_grid, Gridphi,fspaceB,fspace)
+
 global alpha betta sig epsil nu 
 global nk
 

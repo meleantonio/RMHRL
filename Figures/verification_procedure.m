@@ -1,19 +1,20 @@
-% verification procedure
+% Verification procedure
+% (using an idea from Abraham and Pavoni (2008))
 
-
-bond_min =0;
-bond_max = 1;
+% Range for bonds
+bond_min =-10;
+bond_max = 10;
 
 %  Range on which we approximate the solution:
 LowerBoundB = [bond_min ; phi_min; zeta_min  ];%
 UpperBoundB = [bond_max; phi_max; zeta_max  ]; %
 
 OrderB = [10; 10; 10]; % fix number of gridpoints for state variables
-nk = 1000; % number of gridpoints for effort
+nk = 2000; % number of gridpoints for effort
 
 % we use linear interpolation of linear splines
-approxtypeB = 'lin'; %'spli'; %
-splineorderB = 1; %[];% 1;%
+approxtypeB = 'lin'; 
+splineorderB = [];
 
 if(strcmp(approxtypeB,'spli'))
     fspaceB = fundefn(approxtypeB,OrderB,LowerBoundB,UpperBoundB,splineorderB);
@@ -24,17 +25,17 @@ nodesB = funnode(fspaceB);
 bond_grid = gridmake(nodesB);
 
 
-% generate basis functions Chebbasis at Gridphi where ValueVec was defined:
+% generate basis functions BasisB at bond_grid:
 BasisB = funbas(fspaceB,bond_grid);
 
-
-
+% evaluate continuation value for the agent using the solution from the Lagrangean approach
 exp_disc_utility1B = funeval(parexp1,fspace,bond_grid(:,2:3));
 
+% calculate initial conditions for the interpolation coefficients
 parexp1B =  BasisB\exp_disc_utility1B ;
 parpolicyB = [ parexp1B ];
 
-U = ones(length(bond_grid),1);
+U = ones(length(bond_grid),1); % initial guess for the value function
 
 for it = 1:maxits  % value function iteration
     parexp1B_old = parexp1B;
@@ -46,11 +47,13 @@ for it = 1:maxits  % value function iteration
         bond_grid, Gridphi,fspaceB,fspace);
     [U,opt_vecB] = max(value,[],2);
 
-    parexp1B = BasisB\U;
+    % homotopy step for stability
+    parexp1B = .5*(BasisB\U) + .5*parexp1B_old ; %BasisB\U;%
 
+    % display convergence metrics
     disp(sprintf('iteration = %d Diff = %e norm = %e ',...
-        it,(max(abs((U-value_old)./value_old))),norm(parexp1B-parexp1B_old)));
-    if norm(parexp1B-parexp1B_old)<1e-6, break, end;
+        it,(max(abs((U-value_old)./value_old))),norm(abs((parexp1B-parexp1B_old)./parexp1B_old))));
+    if norm(abs((parexp1B-parexp1B_old)./parexp1B_old))<1e-6, break, end;
 
 end
 
@@ -91,3 +94,8 @@ delta_welfare = (exp_disc_utilityBOND0 - funeval(parexp1,fspace,[gam1 0]))...
 disp(sprintf('    '));
 disp(sprintf(' The gain in welfare is  %g',delta_welfare));
 disp(sprintf('    '));
+if exp_disc_utilityBOND0 < funeval(parexp1,fspace,[gam1 0])
+    disp(sprintf('Looks like the FOA is valid!'));
+else
+    disp(sprintf('Oops... FOA is not valid!'));
+end
