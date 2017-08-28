@@ -2,6 +2,7 @@ function equ = HA_focs(par00, Gridphi,fspace);
 
 global alpha betta sig  epsil nu
 global   s output_y
+global zeta_min zeta_max phi_min phi_max
 
 
 % coefficients
@@ -22,7 +23,8 @@ zeta1 = Gridphi(:,2);
 a1 =                     funeval(para1,fspace, Gridphi);
 lambda1 = funeval(parlambda1,fspace, Gridphi);
 c1 =                     funeval(parc1,fspace, Gridphi);
-eta1 =   zeta1./betta + (  1 - phi1.*(c1.^(-sig)))./((-sig).*(c1.^(-sig-1)))   ;
+eta1 =   zeta1./betta + (  1 - ...
+    phi1.*(c1.^(-sig)))./((-sig).*(c1.^(-sig-1))) ;
 
 % probabilities
 prob1_s1 =  a1.^nu;
@@ -43,7 +45,7 @@ dlike_ratio1_s2 = (-nu*(nu-1)*(a1.^(nu-2)) - nu*(a1.^(2*nu-2)))./(prob1_s2.^2) ;
 
 % state variables at t+1
 phiNext1_s1 = phi1 + lambda1.*like_ratio1_s1;
-phiNext1_s2 =phi1 + lambda1.*like_ratio1_s2;
+phiNext1_s2 = phi1 + lambda1.*like_ratio1_s2;
 zetaNext1 = eta1;
 
 
@@ -103,8 +105,8 @@ end;
 
 % FOC a1
 equ3 =  -epsil*alpha.*(a1.^(epsil-1)).*phi1 - epsil*(epsil-1)*alpha.*(a1.^(epsil-2)).*lambda1 ...
-    + ( betta.*lambda1.*(prob1_s1.*dlike_ratio1_s1.*utilityNext_s1 ...
-    + prob1_s2.*dlike_ratio1_s2.*utilityNext_s2) ...
+    + ( betta.*lambda1.*(prob1_s1.*dlike_ratio1_s1.*exp_disc_utility1_next_s1 ...
+    + prob1_s2.*dlike_ratio1_s2.*exp_disc_utility1_next_s2) ...
     +   betta.*dprob1_s1.*exp_planner_disc_utility1_next_s1 ...
     +   betta.*dprob1_s2.*exp_planner_disc_utility2_next_s2);
 
@@ -130,6 +132,6 @@ equ5 = (c1.^(-sig))- prob1_s1.*(c1Next_s1.^(-sig)) - prob1_s2.*(c1Next_s2.^(-sig
 equ = [equ1; equ2 ; equ3; equ4;equ5];
 
 % avoid the solution is strange
-if(any(a1<0)) || (any(c1<1e-6))  ||  (any(a1>1))   || (any( phiNext1_s1<0)) || (any( phiNext1_s2<0))
+if(any(a1<0)) || (any(c1<0))  ||  (any(a1>1))   || (any( phiNext1_s1<0)) || (any( phiNext1_s2<0))
     equ(1) = 1e100;
 end;

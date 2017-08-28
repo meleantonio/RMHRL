@@ -81,5 +81,5 @@ for uu=1:length(OrderVector)
 end
 
 %% Print all and save table
-table_final_HA = [OrderVector(1,:); time_computation_vec; testing_max_vec; testing_norm_vec]'
+[OrderVector; time_computation_vec; testing_max_vec; testing_norm_vec]'
 save table_final_HA table_final_HA -ascii -double -tabs
