@@ -42,12 +42,10 @@ s2(2) =output_y -.4;
 
 
 
-    phibar = omega2/omega1;
-    %         phi_sd =omega2/omega1;
-
-    % without homogen
-    phi_min = phibar  -  .5;%.1;%.45;%.15;
-    phi_max = phibar+ .5;%1;% .45; %.15;
+% Grid
+phibar = omega2/omega1;
+phi_min = phibar  -  .5;
+phi_max = phibar+ .5;
 
 
 
