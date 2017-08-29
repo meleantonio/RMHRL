@@ -17,6 +17,14 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# Build files 
+table_final_RMH
+table_final_HA
+table_final_RSE
+table_final_RSP
+
+
+
 # =========================
 # Operating System Files
 # =========================
